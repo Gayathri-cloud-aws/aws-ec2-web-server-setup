@@ -1,0 +1,170 @@
+1. AWS EC2 Instance (Windows Server) 
+---------------------------------------------------------------------------------
+Windows Server will be deployed as the core component, hosting the web server. 
+Amazon EC2 provides a virtual machine with an operating system, allowing users 
+to run Windows Server instances for web hosting purposes. 
+Instance Type: The instance type (such as t2. micro for basic usage or larger types 
+for production workloads) should be selected based on the web server’s traffic load 
+and performance requirements. 
+IIS (Internet Information Services): IIS will be installed on the Windows Server to 
+serve web content and applications. It’s the default web server for Windows 
+environments and supports both static and dynamic websites. 
+ 
+2. Virtual Private Cloud (VPC) 
+----------------------------------------------------------------------------------
+The VPC provides an isolated network environment within AWS where you can 
+deploy your resources, such as EC2 instances. This ensures that the instance 
+operates within a secure, controlled network. 
+Subnets: 
+Public Subnet: The EC2 instance running the Windows Server will be placed in a 
+public subnet so that it can be accessed via the internet. 
+Internet Gateway: Attached to the VPC, the internet gateway allows inbound and 
+outbound internet traffic to the public facing EC2 instance. 
+ 
+3. Security Groups
+-------------------------------------------------------------------------------==
+Security Groups act as a firewall, controlling inbound and outbound traffic to your 
+EC2 instance. For a Windows Server, you’ll need to configure: 
+RDP (Remote Desktop Protocol): Allow inbound traffic on port 3389 to connect to 
+the Windows Server for administration purposes. 
+HTTP/HTTPS Traffic: Allow inbound traffic on ports 80 (HTTP) and 443 
+(HTTPS) to handle web server requests. 
+The security group will be configured to allow only specific IP addresses to access 
+the instance for RDP, ensuring security. 
+ 
+4. Elastic IP 
+-------------------------------------------------------------------------------------
+An Elastic IP may be associated with the EC2 instance to provide a static public IP 
+address. This ensures that the web server’s IP remains constant even if the instance 
+is restarted, making it easier for users to connect to the website or service.
+
+5. DNS and Route 53
+-----------------------------------------------------------------------------------
+• Amazon Route 53 can be used to manage domain name resolution for your 
+web server. This allows users to access the web server using a custom domain 
+(e.g., www.yourwebsite.com) instead of an IP address. 
+• DNS Configuration: Route 53 will be configured to route traffic to the 
+Elastic IP address of your Windows Server instance. 
+
+6. Amazon CloudWatch
+------------------------------------------------------------------------------------
+• Amazon CloudWatch can be integrated to monitor the performance of the 
+EC2 instance, track resource usage, and set up alarms for performance 
+issues, such as CPU, memory, or disk space utilization. 
+• CloudWatch allows for proactive management of the web server by 
+providing real- time insights into the server’s health and activity. 
+
+7. Auto-Scaling 
+--------------------------------------------------------------------------------------
+Auto-scaling groups can be set up to automatically increase or decrease the number 
+of Windows Server instances based on traffic demand. This ensures that the server 
+ 
+can handle spikes in traffic while minimizing costs by scaling down when demand 
+is low. 
+ 
+8. Data Storage 
+----------------------------------------------------------------------
+Amazon EBS (Elastic Block Store) can be used as a persistent storage solution for 
+the EC2 instance, storing the web server’s data or application files. 
+ 
+STEPS TO IMPLEMENT:
+==========================================================================
+Step 1: Create an AWS Account 
+• If you don’t have an AWS account, go to the AWS website, and sign up 
+for a free account. 
+• After registration, sign in to the AWS Management 
+Console.  
+
+Step 2: Launch an EC2 Instance (Windows Server) 
+Navigate to EC2: 
+In the AWS Management Console, go to Services and select EC2 under the Compute section. 
+ 
+Click on Launch Instance: 
+On the EC2 dashboard, click on Launch Instance to start creating a virtual 
+machine. 
+
+Choose an Amazon Machine Image (AMI): 
+• Select a Windows Server AMI. You can choose between different Windows 
+Server versions, such as Windows Server 2019 or Windows Server 2022. 
+These AMIs include IIS (Internet Information Services) which will be used 
+as the web server. 
+• If eligible for the free tier, select Microsoft Windows Server Free Tier 
+Eligible. 
+
+Choose Instance Type: 
+Choose an instance type. For basic usage, select t2. micro (which is free tier 
+eligible). You can select larger instance types based on your expected workload. 
+ 
+Configure Instance Details: 
+• Network: Select your VPC (or the default VPC). 
+• Subnet: Choose a public subnet to ensure the instance has internet access. 
+• Auto-assign Public IP: Ensure this is set to Enable so the instance can be 
+accessed from the internet. 
+ 
+Add Storage: 
+The default storage size is 30 GB, but you can modify it based on your 
+requirements. For web hosting, ensure there is enough space for your website files. 
+
+Add Tags: 
+You can add tags to help identify and manage your EC2 instance, such as Name: 
+Windows Webserver. 
+
+Configure Security Group: 
+Create a new security group or use an existing one. The security group controls 
+traffic to your instance. 
+• RDP: Add a rule to allow inbound traffic on port 3389 for RDP access. 
+HTTP: Add a rule for port 80 to allow inbound HTTP traffic for web. 
+access. HTTPS: Add a rule for port 443 to allow secure web. 
+• Restrict the RDP rule to your IP address for security. 
+ 
+Review and Launch: 
+Review all the configurations and click Launch. 
+ 
+Choose an existing key pair or create a new one to securely connect via RDP. 
+Download the private key file (.pem file) and keep it safe. 
+ 
+Step 3: Connect to the EC2 Instance 
+Obtain the Public IP: 
+Once the instance is running, navigate to the EC2 dashboard and locate your 
+instance. Copy the public IP address or public DNS. 
+ 
+Download RDP File: 
+1.Click on Connect in the EC2 console and select RDP Client. 
+2.Download the RDP file provided by AWS for easy 
+connection.  
+ 
+Retrieve Administrator Password: 
+To connect, you will need the Windows administrator password. Select your 
+instance, click Actions > Get Windows Password. Upload the .pem file and decrypt 
+the password.
+ 
+Connect Using RDP: 
+Open the RDP file you downloaded and enter the administrator password to access 
+your Windows Server. 
+
+Step 4: Install and Configure IIS (Internet Information Services) 
+Access Server Manager: 
+Once connected to the Windows Server, the Server Manager will open 
+automatically. 
+Add Roles and Features: 
+In the Server Manager dashboard, click on Add Roles and Features. 
+Follow the wizard, selecting Web Server (IIS) as the role to install. This will 
+enable IIS on your Windows Server. 
+ 
+Configure IIS: 
+After the installation, IIS will be running by default. You can verify it by opening 
+your browser and typing http://localhost or the public IP address of the EC2 
+instance. 
+You should see the IIS default page, confirming that the web server is running. 
+Step 5: Upload and host a website. 
+Access IIS Directory: 
+The default directory for hosting web files is located at C:\inetpub\wwwroot\. 
+Upload Your Website Files: 
+Transfer your website files to this directory using RDP or a file transfer tool. 
+If you don't have a website ready, you can create a simple index.html page and 
+place it in the wwwroot folder. 
+ 
+Access the Website:  
+Open a browser and enter your EC2 instance’s public IP address in the URL bar. If 
+the setup is correct, your website should load. 
+ 
